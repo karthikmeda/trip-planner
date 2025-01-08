@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { auth } from '../../firebase'; // Import auth
 import './Login.css';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'; // Import Firebase auth methods
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -12,7 +15,7 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const [isForgotPassword, setIsForgotPassword] = useState(false); // State for managing forgot password
-
+  const navigate = useNavigate();
   const { email, password, confirmPassword } = data;
 
   const toggleMode = () => {
@@ -30,6 +33,10 @@ const Login = () => {
 
     if (isSignUp) {
       if (password !== confirmPassword) {
+        toast.error('password do not match!', {
+          position: "top-right",
+          autoClose: 3000,
+        });
         setError("Passwords do not match!"); // Set error message
         return;
       }
@@ -49,9 +56,18 @@ const Login = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("User Signed Up:", userCredential.user);
-        alert("Sign Up Successful!");
+        //alert("Sign Up Successful!");
+        toast.success("Successfully Signed Up", {
+          position: "top-right",
+          autoClose: 2000, // Adjust timing as needed
+          onClose: () => navigate('/home'), // Navigate after toast closes
+        });
       })
       .catch((err) => {
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 3000,
+        });
         console.log("Error:", err.message);
         setError(err.message); // Display Firebase error message
       });
@@ -61,10 +77,21 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("User Signed In:", userCredential.user);
-        alert("Login Successful!");
+        //alert("Login Successful!");
+        toast.success("Successfully Login", {
+          position: "top-right",
+          autoClose: 2000, // Adjust timing as needed
+          onClose: () => navigate('/home'), // Navigate after toast closes
+        });
+        
+        // navigate('/home')
       })
       .catch((err) => {
         console.log("Error:", err.message);
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 3000,
+        });
         setError(err.message); // Display Firebase error message
       });
   };
@@ -72,10 +99,18 @@ const Login = () => {
   const resetPassword = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        alert("Password reset email sent!");
+        toast.success('password reset  mail  sent!!!', {
+          position: "top-right",
+          autoClose: 5000,
+        });
+        // alert("Password reset email sent!");
         setIsForgotPassword(false); // Hide the reset form after submission
       })
       .catch((err) => {
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 3000,
+        });
         setError(err.message); // Display Firebase error message
       });
   };
@@ -86,9 +121,17 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         console.log("User signed in with Google:", user);
-        alert("Google Sign-In Successful!");
+        toast.success("Successfully Signed Up", {
+          position: "top-right",
+          autoClose: 2000, // Adjust timing as needed
+          onClose: () => navigate('/home'), // Navigate after toast closes
+        });
       })
       .catch((err) => {
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 3000,
+        });
         console.log("Error:", err.message);
         setError(err.message); // Display Firebase error message
       });
@@ -119,6 +162,7 @@ const Login = () => {
                 required
               />
             </div>
+            {!isForgotPassword && (
             <div className="form-group">
               <input
                 type="password"
@@ -130,8 +174,8 @@ const Login = () => {
                 required
               />
             </div>
-
-            {isSignUp && (
+            )}
+            {isSignUp && !isForgotPassword && (
               <div className="form-group">
                 <input
                   type="password"
@@ -187,6 +231,7 @@ const Login = () => {
             </p>
           )}
         </div>
+        <ToastContainer />
       </div>
     </section>
   );
