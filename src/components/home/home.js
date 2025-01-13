@@ -1,8 +1,8 @@
 import React from 'react'
 
-function home() {
+const home = () => {
   return (
-    <div>welcome </div>
+    <div>home</div>
   )
 }
 

@@ -1,8 +1,8 @@
 {
-  "homepage": "https://karthikmeda.github.io/trip-planner",
   "name": "trip-planner",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://karthikmeda.github.io/trip-planner",
   "dependencies": {
     "cra-template": "1.2.0",
     "firebase": "^11.1.0",
